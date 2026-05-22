@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Cutiepie</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #ffe6f2;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* Floating hearts and flowers full screen */
+    .floating {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 0;
+    }
+
+    .heart, .flower {
+        position: absolute;
+        animation: floatUp linear infinite;
+        opacity: 0.8;
+    }
+
+    .heart { color: #ff6699; font-size: 20px; }
+    .flower { font-size: 25px; }
+
+    @keyframes floatUp {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Page containers */
+    .center {
+        display: none;
+        height: 100vh;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+        position: relative;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 1s ease;
+    }
+    .active { display: flex; opacity: 1; }
+
+    input {
+        padding: 12px;
+        width: 80%;
+        max-width: 300px;
+        border-radius: 8px;
+        border: 1px solid #e291b0;
+        font-size: 16px;
+        outline: none;
+        margin-top: 10px;
+    }
+
+    button {
+        margin-top: 15px;
+        padding: 12px 24px;
+        font-size: 17px;
+        border: none;
+        background: #ffb3d9;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform .2s, background .3s;
+    }
+    button:hover { background: #ff99cc; transform: scale(1.05); }
+
+    h1, h2, p { color: #d63384; margin: 5px; }
+
+    .typing { font-size: 18px; margin-top: 15px; }
+
+    .name-heart {
+        animation: bounce 1.5s infinite;
+        display: inline-block;
+        color: #ff3385;
+        font-size: 28px;
+        margin-left: 10px;
+    }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    /* Surprise Page */
+    .slideshow-container {
+        width: 100%;
+        max-width: 300px; /* adjust max width as needed */
+        aspect-ratio: 4/5; /* keeps proportional height relative to width */
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 0 15px #ffb6d6;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .slideshow-container img {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        animation: slideShow 12s infinite;
+        object-fit: cover; /* ensures images fill the box without empty space */
+        border-radius: 15px;
+    }
+
+    .slideshow-container img:nth-child(1) { animation-delay: 0s; }
+    .slideshow-container img:nth-child(2) { animation-delay: 4s; }
+    .slideshow-container img:nth-child(3) { animation-delay: 8s; }
+
+    @keyframes slideShow { 
+        0%{opacity:0;} 8%{opacity:1;} 33%{opacity:1;} 41%{opacity:0;} 100%{opacity:0;} 
+    }
+
+    #finalMessage {
+        font-size: 22px;
+        color: #ff3385;
+        margin-top: 20px;
+        opacity: 0;
+        animation: fadeInMessage 3s forwards;
+    }
+    @keyframes fadeInMessage { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+
+    .confetti, .popup-heart {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        opacity: 0.8;
+        z-index: 5;
+        pointer-events: none;
+        animation: fall 4s linear forwards;
+    }
+
+    .popup-heart {
+        font-size: 20px;
+        animation: popHeart 0.8s ease forwards;
+    }
+
+    @keyframes fall { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(800px) rotate(360deg); opacity:0; } }
+    @keyframes popHeart { 0% { transform: scale(0.5); opacity:1;} 50% { transform: scale(1.2);} 100% { transform: scale(1); opacity:0;} }
+
+    .cake-container {
+        position: relative;
+        margin-top: 25px;
+        cursor: pointer;
+    }
+    .cake-img { width: 150px; max-width: 80vw; display: block; }
+    .candle { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 28px; transition: opacity 0.5s; }
+    .candle.blowed { opacity: 0; }
+
+    @media(max-width: 480px){
+        .slideshow-container { max-width: 200px; aspect-ratio: 4/5; }
+        h1 { font-size: 24px; }
+        h2 { font-size: 20px; }
+        .name-heart { font-size: 24px; }
+        button { font-size: 16px; padding: 10px 20px; }
+        input { font-size: 16px; }
+        .typing { font-size: 16px; }
+        #finalMessage { font-size: 20px; }
+        .cake-img { width: 120px; }
+        .candle { font-size: 22px; top: -20px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="floating" id="floatingObjects"></div>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="center active">
+    <h1>Hello Cutiepie</h1>
+    <p>Enter your name to continue</p>
+    <input id="nameInput" type="text" placeholder="Enter your name...">
+    <button onclick="checkName()">Continue</button>
+    <p id="error" style="color:red;margin-top:10px;"></p>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="mainPage" class="center">
+    <h1>Happy 20th Birthday<span></span> Mero Pyaaariii Kuttuu Mayaluuu<span class="name-heart">❤</span></h1>
+    <p id="typingText" class="typing"></p>
+
+    <div class="cake-container" onclick="blowCandle()">
+        <img src="CAKEE.webp" alt="Birthday Cake" class="cake-img">
+        <span class="candle" id="candle">🕯️</span>
+    </div>
+
+    <button onclick="showSurprise()">Click Here</button>
+</div>
+
+<!-- SURPRISE PAGE -->
+<div id="surprisePage" class="center">
+    <h2>MY CUTIE KUTTUUU💗</h2>
+    <div class="slideshow-container">
+        <img src="photo1.jpg.jpg">
+        <img src="photo2.jpg.jpg">
+        <img src="photo3.jpg.jpg">
+    </div>
+    <div id="finalMessage">Your Bills will always be there for you. </div>
+    <div id="finalMessage">I love you and miss you dheeraaaiiiii💖</div>
+
+<script>
+    const floatingEl = document.getElementById("floatingObjects");
+    const emojis = ["❤","🌸"];
+
+    function checkName() {
+        const name = document.getElementById("nameInput").value.trim().toLowerCase();
+        const allowed = ["shweta","sweta","samyukta"];
+        if(allowed.includes(name)){
+            document.getElementById("loginPage").classList.remove("active");
+            document.getElementById("mainPage").classList.add("active");
+            startTyping();
+        } else {
+            document.getElementById("error").innerText = "Only my cutiepie can enter ❤️";
+        }
+    }
+
+    function showSurprise(){
+        document.getElementById("mainPage").classList.remove("active");
+        document.getElementById("surprisePage").classList.add("active");
+    }
+
+    function startTyping(){
+        const text = "You mean so much to me. I hope your day is full of love, joy and everything beautiful, Take care.";
+        const el = document.getElementById("typingText");
+        el.textContent = "";
+        let i = 0;
+        const interval = setInterval(() => {
+            el.textContent += text.charAt(i);
+            i++;
+            if(i >= text.length) clearInterval(interval);
+        }, 50);
+    }
+
+    function createFloatingObjects(){
+        setInterval(()=>{
+            const span = document.createElement("div");
+            const emoji = emojis[Math.floor(Math.random()*emojis.length)];
+            span.innerHTML = emoji;
+
+            if(emoji === "❤") span.className = "heart";
+            else span.className = "flower";
+
+            span.style.left = Math.random()*100 + "vw";
+            span.style.top = Math.random()*100 + "vh";
+            span.style.fontSize = (20 + Math.random()*25) + "px";
+            span.style.color = ["#ff6699","#ff99cc","#ff3385","#ffb6d6","#ffccff","#ff66cc"][Math.floor(Math.random()*6)];
+            span.style.animationDuration = (5 + Math.random()*7) + "s";
+
+            floatingEl.appendChild(span);
+            setTimeout(()=>span.remove(),12000);
+        }, 400);
+    }
+    createFloatingObjects();
+
+    function blowCandle(){
+        const candle = document.getElementById("candle");
+        candle.classList.add("blowed");
+    }
+
+    document.body.addEventListener("click",(e)=>{
+        const heart = document.createElement("div");
+        heart.classList.add("popup-heart");
+        heart.innerText = "❤";
+        heart.style.left = e.clientX - 10 + "px";
+        heart.style.top = e.clientY - 10 + "px";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),800);
+    });
+</script>
+
+</body>
+</html>
